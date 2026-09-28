@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=()" />
+  <meta name="description" content="Bruh Freelance – Affordable Web Development, Landing Pages, SaaS Projects & Data Analytics for local and global clients." />
+  <title>Bruh Freelance | Web Dev · SaaS · Data Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0a0f;
+      color: #e8e8f0;
+      overflow-x: hidden;
+      cursor: none;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* ── Custom Cursor ── */
+    #cursor-dot {
+      width: 8px; height: 8px;
+      background: #7c3aed;
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform .1s ease, background .3s;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 2px solid rgba(124,58,237,.5);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: width .3s, height .3s, border-color .3s, transform .08s ease;
+    }
+    #cursor-trail-container {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 9997;
+      overflow: hidden;
+    }
+    .trail-dot {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      pointer-events: none;
+      transform: translate(-50%,-50%);
+      animation: trail-fade .6s ease forwards;
+    }
+    @keyframes trail-fade {
+      0%   { opacity: .6; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0;  transform: translate(-50%,-50%) scale(0); }
+    }
+    body:has(a:hover) #cursor-dot,
+    body:has(button:hover) #cursor-dot { background: #a78bfa; transform: translate(-50%,-50%) scale(1.5); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: rgba(167,139,250,.6); }
+
+    /* ── Noise Overlay ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1;
+      opacity: .4;
+    }
+
+    /* ── Gradient Blobs ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: blob-drift 12s ease-in-out infinite alternate;
+    }
+    .blob-1 { width: 500px; height: 500px; background: rgba(124,58,237,.18); top: -150px; left: -100px; animation-delay: 0s; }
+    .blob-2 { width: 400px; height: 400px; background: rgba(59,130,246,.14); bottom: 10%; right: -80px; animation-delay: -4s; }
+    .blob-3 { width: 300px; height: 300px; background: rgba(236,72,153,.1); top: 40%; left: 40%; animation-delay: -8s; }
+    @keyframes blob-drift {
+      0%   { transform: translate(0,0) scale(1); }
+      100% { transform: translate(40px,30px) scale(1.08); }
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+    /* ── Navbar ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 0;
+      backdrop-filter: blur(20px) saturate(1.5);
+      background: rgba(10,10,15,.7);
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      transition: padding .3s;
+    }
+    nav.scrolled { padding: 12px 0; }
+    nav .container { display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 700; font-size: 1.1rem; letter-spacing: -.5px;
+    }
+    .nav-logo img { width: 44px; height: 44px; object-fit: contain; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: .9rem; font-weight: 500; color: rgba(255,255,255,.6);
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: #a78bfa; cursor: none; }
+    .nav-cta {
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      color: #fff !important;
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: opacity .2s, transform .2s !important;
+    }
+    .nav-cta:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; align-items: center;
+      padding: 120px 0 80px;
+      position: relative; overflow: hidden;
+    }
+    .hero-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(124,58,237,.15);
+      border: 1px solid rgba(124,58,237,.35);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: .8rem; font-weight: 600; color: #a78bfa;
+      margin-bottom: 24px;
+      letter-spacing: .4px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; background: #7c3aed; border-radius: 50%; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+    h1 {
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #a78bfa, #60a5fa, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,.55);
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 480px;
+    }
+    .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      color: #fff;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .95rem;
+      border: none;
+      cursor: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(124,58,237,.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(124,58,237,.5); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      color: #e8e8f0;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: .95rem;
+      border: 1px solid rgba(255,255,255,.15);
+      cursor: none;
+      transition: border-color .2s, background .2s, transform .2s;
+    }
+    .btn-outline:hover { border-color: #a78bfa; background: rgba(124,58,237,.08); transform: translateY(-2px); }
+
+    /* Hero logo visual */
+    .hero-visual {
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-logo-wrap {
+      width: 340px; height: 340px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-logo-wrap::before {
+      content: '';
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #7c3aed, #4f46e5, #60a5fa, #7c3aed);
+      animation: spin 6s linear infinite;
+      z-index: -1;
+    }
+    .hero-logo-wrap::after {
+      content: '';
+      position: absolute; inset: 3px;
+      border-radius: 50%;
+      background: #0a0a0f;
+      z-index: -1;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hero-logo-wrap img {
+      width: 280px; height: 280px;
+      object-fit: contain;
+      border-radius: 50%;
+      animation: float 4s ease-in-out infinite;
+    }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .orbit {
+      position: absolute;
+      width: 380px; height: 380px;
+      border: 1px dashed rgba(124,58,237,.2);
+      border-radius: 50%;
+      animation: spin 18s linear infinite;
+    }
+    .orbit-dot {
+      position: absolute;
+      width: 10px; height: 10px;
+      background: #7c3aed;
+      border-radius: 50%;
+      top: -5px; left: calc(50% - 5px);
+      box-shadow: 0 0 10px #7c3aed;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 1px;
+      background: rgba(255,255,255,.06);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 56px;
+    }
+    .stat {
+      background: rgba(255,255,255,.03);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg,#a78bfa,#60a5fa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .stat-label { font-size: .8rem; color: rgba(255,255,255,.45); margin-top: 4px; font-weight: 500; }
+
+    /* ── Section commons ── */
+    section { padding: 96px 0; position: relative; }
+    .section-label {
+      font-size: .78rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #7c3aed;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 800; letter-spacing: -1px;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 1rem; color: rgba(255,255,255,.5);
+      line-height: 1.7; max-width: 520px;
+    }
+    .section-header { margin-bottom: 56px; }
+    .section-header.center { text-align: center; }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+    }
+
+    /* ── Services ── */
+    #services { background: rgba(255,255,255,.01); }
+    .services-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; }
+    .service-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
+      padding: 36px 32px;
+      transition: border-color .3s, transform .3s, background .3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 20% 20%, rgba(124,58,237,.08), transparent 60%);
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .service-card:hover { border-color: rgba(124,58,237,.4); transform: translateY(-4px); background: rgba(255,255,255,.06); }
+    .service-card:hover::before { opacity: 1; }
+    .service-icon {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg,rgba(124,58,237,.2),rgba(79,70,229,.2));
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+    .service-card h3 { font-size: 1.15rem; font-weight: 700; margin-bottom: 10px; }
+    .service-card p { font-size: .9rem; color: rgba(255,255,255,.5); line-height: 1.65; }
+    .service-tag {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 4px 12px;
+      background: rgba(124,58,237,.12);
+      border: 1px solid rgba(124,58,237,.25);
+      border-radius: 100px;
+      font-size: .75rem; font-weight: 600; color: #a78bfa;
+    }
+
+    /* ── Why Us ── */
+    #why { background: rgba(124,58,237,.03); }
+    .why-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .why-card {
+      padding: 32px 28px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.07);
+      background: rgba(255,255,255,.03);
+      text-align: center;
+      transition: transform .3s, border-color .3s;
+    }
+    .why-card:hover { transform: translateY(-4px); border-color: rgba(124,58,237,.3); }
+    .why-icon { font-size: 2rem; margin-bottom: 16px; }
+    .why-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .why-card p { font-size: .88rem; color: rgba(255,255,255,.5); line-height: 1.65; }
+
+    /* ── Process ── */
+    .process-steps { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; position: relative; }
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 12.5%; right: 12.5%;
+      height: 1px;
+      background: linear-gradient(90deg, #7c3aed, #4f46e5, #60a5fa);
+      z-index: 0;
+    }
+    .step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 16px;
+      position: relative; z-index: 1;
+    }
+    .step-num {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1rem; color: #fff;
+      margin-bottom: 20px;
+      box-shadow: 0 0 24px rgba(124,58,237,.4);
+    }
+    .step h4 { font-size: .95rem; font-weight: 700; margin-bottom: 8px; }
+    .step p { font-size: .83rem; color: rgba(255,255,255,.5); line-height: 1.6; }
+
+    /* ── Pricing ── */
+    #pricing { background: rgba(255,255,255,.01); }
+    .pricing-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .pricing-card {
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.04);
+      padding: 40px 32px;
+      transition: transform .3s, border-color .3s;
+      position: relative; overflow: hidden;
+    }
+    .pricing-card.featured {
+      border-color: #7c3aed;
+      background: rgba(124,58,237,.08);
+    }
+    .pricing-card.featured::before {
+      content: '⭐ Most Popular';
+      position: absolute; top: 16px; right: 16px;
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      color: #fff; font-size: .7rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 100px;
+      letter-spacing: .5px;
+    }
+    .pricing-card:hover:not(.featured) { transform: translateY(-4px); border-color: rgba(124,58,237,.3); }
+    .pricing-card.featured:hover { transform: translateY(-4px); }
+    .pricing-name { font-size: .85rem; font-weight: 700; color: #a78bfa; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .pricing-price {
+      font-size: 2.5rem; font-weight: 900; letter-spacing: -1px;
+      line-height: 1;
+    }
+    .pricing-price span { font-size: 1rem; font-weight: 500; color: rgba(255,255,255,.4); }
+    .pricing-desc { font-size: .85rem; color: rgba(255,255,255,.45); margin: 12px 0 28px; line-height: 1.6; }
+    .pricing-features { list-style: none; margin-bottom: 32px; }
+    .pricing-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: .88rem; color: rgba(255,255,255,.7);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+    .pricing-features li:last-child { border-bottom: none; }
+    .check { color: #a78bfa; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .pricing-btn {
+      display: block; text-align: center;
+      padding: 13px;
+      border-radius: 10px;
+      font-weight: 700; font-size: .9rem;
+      cursor: none;
+      transition: transform .2s, opacity .2s;
+    }
+    .pricing-btn-outline {
+      border: 1px solid rgba(255,255,255,.2);
+      color: #e8e8f0;
+    }
+    .pricing-btn-outline:hover { border-color: #a78bfa; transform: translateY(-1px); }
+    .pricing-btn-solid {
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(124,58,237,.35);
+    }
+    .pricing-btn-solid:hover { opacity: .88; transform: translateY(-1px); }
+
+    /* ── Testimonial ── */
+    #testimonials { background: rgba(124,58,237,.03); }
+    .testimonial-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .tcard {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 18px;
+      padding: 28px;
+      transition: transform .3s;
+    }
+    .tcard:hover { transform: translateY(-3px); }
+    .stars { font-size: .9rem; color: #f59e0b; margin-bottom: 14px; }
+    .tcard-text { font-size: .9rem; color: rgba(255,255,255,.65); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .tcard-author { display: flex; align-items: center; gap: 12px; }
+    .tcard-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .85rem; color: #fff;
+    }
+    .tcard-name { font-weight: 700; font-size: .88rem; }
+    .tcard-role { font-size: .78rem; color: rgba(255,255,255,.4); }
+
+    /* ── Contact ── */
+    #contact { background: rgba(255,255,255,.01); }
+    .contact-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start;
+    }
+    .contact-info h2 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -.8px; }
+    .contact-info p { font-size: .95rem; color: rgba(255,255,255,.5); line-height: 1.7; margin-bottom: 32px; }
+    .contact-detail {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      transition: border-color .2s;
+    }
+    .contact-detail:hover { border-color: rgba(124,58,237,.3); }
+    .contact-detail .icon {
+      width: 40px; height: 40px;
+      background: rgba(124,58,237,.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .contact-detail .label { font-size: .78rem; color: rgba(255,255,255,.4); }
+    .contact-detail .value { font-size: .9rem; font-weight: 600; }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: .82rem; font-weight: 600; color: rgba(255,255,255,.6); }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: #e8e8f0;
+      font-family: inherit;
+      font-size: .9rem;
+      transition: border-color .2s, background .2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      border-color: #7c3aed;
+      background: rgba(124,58,237,.07);
+    }
+    .form-group textarea { resize: vertical; min-height: 110px; }
+    .form-group select option { background: #1a1a2e; color: #e8e8f0; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-submit {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 14px;
+      background: linear-gradient(135deg,#7c3aed,#4f46e5);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: .95rem;
+      cursor: none;
+      transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 20px rgba(124,58,237,.35);
+    }
+    .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,.5); }
+
+    /* ── Footer ── */
+    footer {
+      background: rgba(0,0,0,.4);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 40px 0;
+    }
+    .footer-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 12px; font-weight: 700; }
+    .footer-logo img { width: 32px; height: 32px; object-fit: contain; }
+    .footer-copy { font-size: .82rem; color: rgba(255,255,255,.35); }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: .82rem; color: rgba(255,255,255,.4); transition: color .2s; }
+    .footer-links a:hover { color: #a78bfa; }
+
+    /* ── Scroll Reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: .1s; }
+    .reveal-delay-2 { transition-delay: .2s; }
+    .reveal-delay-3 { transition-delay: .3s; }
+    .reveal-delay-4 { transition-delay: .4s; }
+
+    /* ── Mobile ── */
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; text-align: center; }
+      .hero-visual { display: none; }
+      .hero-sub { margin: 0 auto 36px; }
+      .hero-actions { justify-content: center; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+      .stats-row .stat:last-child { grid-column: span 2; }
+      .services-grid, .pricing-grid, .testimonial-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-steps::before { display: none; }
+      .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+      .form-row { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Cursor -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+  <div id="cursor-trail-container"></div>
+
+  <!-- Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- Navbar -->
+  <nav id="navbar">
+    <div class="container">
+      <div class="nav-logo">
+        <img src="bruh_logo.png" alt="Bruh Freelance Logo" />
+        <span>Bruh Freelance</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#services">Services</a></li>
+        <li><a href="#why">Why Us</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#pricing">Pricing</a></li>
+        <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-content">
+          <div class="hero-badge"><span class="dot"></span> Available for Projects</div>
+          <h1>We Build Digital<br /><span>Products That Work</span></h1>
+          <p class="hero-sub">From sleek landing pages to full SaaS platforms — Bruh Freelance delivers high-quality, affordable digital solutions with real hands-on experience.</p>
+          <div class="hero-actions">
+            <a href="#contact" class="btn-primary">🚀 Start a Project</a>
+            <a href="#services" class="btn-outline">See Our Services ↓</a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-logo-wrap">
+            <div class="orbit"><div class="orbit-dot"></div></div>
+            <img src="bruh_logo.png" alt="Bruh Freelance" />
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-row reveal">
+        <div class="stat"><div class="stat-num">20+</div><div class="stat-label">Projects Completed</div></div>
+        <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Client Satisfaction</div></div>
+        <div class="stat"><div class="stat-num">₹ Low</div><div class="stat-label">Affordable Pricing</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Services -->
+  <section id="services">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-label reveal">What We Do</div>
+        <h2 class="section-title reveal">Our Services</h2>
+        <p class="section-sub reveal">End-to-end digital services crafted with care, delivered at prices that make sense for local businesses and startups alike.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card reveal reveal-delay-1">
+          <div class="service-icon">🌐</div>
+          <h3>Web Development</h3>
+          <p>Full-stack websites built with modern technologies — fast, responsive, and optimized for search engines. From simple business sites to complex portals.</p>
+          <span class="service-tag">React · Node · HTML/CSS</span>
+        </div>
+        <div class="service-card reveal reveal-delay-2">
+          <div class="service-icon">📄</div>
+          <h3>Landing Pages</h3>
+          <p>High-converting landing pages designed to turn visitors into customers. Pixel-perfect design with persuasive copy and clear calls to action.</p>
+          <span class="service-tag">Conversion Focused</span>
+        </div>
+        <div class="service-card reveal reveal-delay-3">
+          <div class="service-icon">⚡</div>
+          <h3>SaaS Projects</h3>
+          <p>We build scalable SaaS applications from scratch — authentication, dashboards, billing, and APIs — architected for growth from day one.</p>
+          <span class="service-tag">Scalable · Secure · Fast</span>
+        </div>
+        <div class="service-card reveal reveal-delay-4">
+          <div class="service-icon">📊</div>
+          <h3>Data Analytics</h3>
+          <p>Transform raw data into actionable insights. Dashboards, reports, data pipelines, and visualizations that help you make smarter decisions.</p>
+          <span class="service-tag">Python · SQL · Tableau</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Why Us -->
+  <section id="why">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-label reveal">Our Edge</div>
+        <h2 class="section-title reveal">Why Choose Bruh Freelance?</h2>
+        <p class="section-sub reveal">We're not just developers — we're problem solvers who've worked with real local businesses and understand what it takes to deliver results.</p>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon">💰</div>
+          <h3>Affordable Pricing</h3>
+          <p>Professional quality without agency pricing. We keep costs lean so your budget goes further.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-2">
+          <div class="why-icon">🤝</div>
+          <h3>Real Client Experience</h3>
+          <p>We've successfully delivered projects for local businesses — not just theory, but proven hands-on execution.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <div class="why-icon">⚡</div>
+          <h3>Fast Turnaround</h3>
+          <p>We respect your timeline. Quick delivery with no compromise on quality or attention to detail.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-1">
+          <div class="why-icon">🔒</div>
+          <h3>Security First</h3>
+          <p>Every project is built with security best practices — XSS protection, HTTPS, input validation, and more.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-2">
+          <div class="why-icon">🎯</div>
+          <h3>Results Driven</h3>
+          <p>We measure success by your outcomes — more leads, better performance, happier users.</p>
+        </div>
+        <div class="why-card reveal reveal-delay-3">
+          <div class="why-icon">💬</div>
+          <h3>Clear Communication</h3>
+          <p>No jargon, no ghosting. We keep you in the loop every step of the way from brief to launch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Process -->
+  <section id="process">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-label reveal">How We Work</div>
+        <h2 class="section-title reveal">Our Simple Process</h2>
+      </div>
+      <div class="process-steps">
+        <div class="step reveal reveal-delay-1">
+          <div class="step-num">01</div>
+          <h4>Discovery Call</h4>
+          <p>We understand your goals, audience, and requirements before writing a single line of code.</p>
+        </div>
+        <div class="step reveal reveal-delay-2">
+          <div class="step-num">02</div>
+          <h4>Design & Plan</h4>
+          <p>Wireframes, tech stack selection, and a clear project roadmap — all approved by you first.</p>
+        </div>
+        <div class="step reveal reveal-delay-3">
+          <div class="step-num">03</div>
+          <h4>Build & Review</h4>
+          <p>We develop in sprints with regular check-ins so you can give feedback along the way.</p>
+        </div>
+        <div class="step reveal reveal-delay-4">
+          <div class="step-num">04</div>
+          <h4>Launch & Support</h4>
+          <p>We handle deployment, testing, and stay on hand for post-launch support and tweaks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Pricing -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-label reveal">Transparent Pricing</div>
+        <h2 class="section-title reveal">Affordable Plans for Every Budget</h2>
+        <p class="section-sub reveal">No hidden charges. No surprises. Just straightforward pricing that works for local businesses and growing startups.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card reveal reveal-delay-1">
+          <div class="pricing-name">Starter</div>
+          <div class="pricing-price">₹4,999 <span>/ project</span></div>
+          <div class="pricing-desc">Perfect for small businesses needing a clean online presence.</div>
+          <ul class="pricing-features">
+            <li><span class="check">✦</span>Landing Page (up to 5 sections)</li>
+            <li><span class="check">✦</span>Mobile Responsive Design</li>
+            <li><span class="check">✦</span>Contact Form Integration</li>
+            <li><span class="check">✦</span>Basic SEO Setup</li>
+            <li><span class="check">✦</span>1 Round of Revisions</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-outline">Get Started →</a>
+        </div>
+        <div class="pricing-card featured reveal reveal-delay-2">
+          <div class="pricing-name">Professional</div>
+          <div class="pricing-price">₹14,999 <span>/ project</span></div>
+          <div class="pricing-desc">For businesses needing a complete, feature-rich website or web app.</div>
+          <ul class="pricing-features">
+            <li><span class="check">✦</span>Full Website (up to 10 pages)</li>
+            <li><span class="check">✦</span>Custom UI/UX Design</li>
+            <li><span class="check">✦</span>CMS / Admin Dashboard</li>
+            <li><span class="check">✦</span>API Integrations</li>
+            <li><span class="check">✦</span>Full SEO Optimization</li>
+            <li><span class="check">✦</span>3 Rounds of Revisions</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-solid">Get Started →</a>
+        </div>
+        <div class="pricing-card reveal reveal-delay-3">
+          <div class="pricing-name">SaaS / Analytics</div>
+          <div class="pricing-price">₹29,999 <span>/ project</span></div>
+          <div class="pricing-desc">Full SaaS build or advanced data analytics and dashboard projects.</div>
+          <ul class="pricing-features">
+            <li><span class="check">✦</span>SaaS App or Data Dashboard</li>
+            <li><span class="check">✦</span>Auth, Billing & User Roles</li>
+            <li><span class="check">✦</span>Database Architecture</li>
+            <li><span class="check">✦</span>Data Pipelines / Visualizations</li>
+            <li><span class="check">✦</span>Deployment & CI/CD</li>
+            <li><span class="check">✦</span>Unlimited Revisions</li>
+          </ul>
+          <a href="#contact" class="pricing-btn pricing-btn-outline">Get Started →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Testimonials -->
+  <section id="testimonials">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-label reveal">Client Love</div>
+        <h2 class="section-title reveal">What Our Clients Say</h2>
+      </div>
+      <div class="testimonial-grid">
+        <div class="tcard reveal reveal-delay-1">
+          <div class="stars">★★★★★</div>
+          <p class="tcard-text">"Bruh Freelance built our entire business website in under 2 weeks. The quality was incredible — way beyond what we expected for the price."</p>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#7c3aed,#4f46e5)">RK</div>
+            <div><div class="tcard-name">Ravi Kumar</div><div class="tcard-role">Local Business Owner, Chennai</div></div>
+          </div>
+        </div>
+        <div class="tcard reveal reveal-delay-2">
+          <div class="stars">★★★★★</div>
+          <p class="tcard-text">"They understood exactly what we needed from the first call. The landing page they built tripled our inquiry rate within the first month."</p>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#4f46e5,#60a5fa)">SP</div>
+            <div><div class="tcard-name">Sneha Patel</div><div class="tcard-role">Startup Founder, Coimbatore</div></div>
+          </div>
+        </div>
+        <div class="tcard reveal reveal-delay-3">
+          <div class="stars">★★★★★</div>
+          <p class="tcard-text">"The data analytics dashboard they built for us saves our team 10 hours every week. Fantastic work, super affordable, and very professional."</p>
+          <div class="tcard-author">
+            <div class="tcard-avatar" style="background:linear-gradient(135deg,#059669,#10b981)">MA</div>
+            <div><div class="tcard-name">Mohammed Asif</div><div class="tcard-role">Operations Manager, Bangalore</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-inner">
+        <div class="contact-info reveal">
+          <div class="section-label">Let's Talk</div>
+          <h2>Ready to Build Something Great?</h2>
+          <p>Tell us about your project and we'll get back to you within 24 hours with a custom quote. No commitment needed.</p>
+          <div class="contact-detail">
+            <div class="icon">📧</div>
+            <div><div class="label">Email Us</div><div class="value">brush.developer@gmail.com</div></div>
+          </div>
+          <div class="contact-detail">
+            <div class="icon">⏰</div>
+            <div><div class="label">Response Time</div><div class="value">Within 24 hours</div></div>
+          </div>
+          <div class="contact-detail">
+            <div class="icon">🌍</div>
+            <div><div class="label">Clients</div><div class="value">Local & Remote — India</div></div>
+          </div>
+        </div>
+        <form class="contact-form reveal reveal-delay-2" action="https://api.web3forms.com/submit" method="POST" id="contact-form">
+          <input type="hidden" name="access_key" value="59bec5d9-29dd-4301-93d5-c6adc8296b56" />
+          <input type="hidden" name="subject" value="New Project Enquiry - Bruh Freelance" />
+          <input type="hidden" name="from_name" value="Bruh Freelance Website" />
+          <input type="checkbox" name="botcheck" style="display:none" />
+          <div class="form-row">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" name="name" placeholder="e.g. Ravi Kumar" required autocomplete="name" maxlength="100" />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input type="email" name="email" placeholder="you@example.com" required autocomplete="email" maxlength="200" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Service Needed</label>
+            <select name="service" required>
+              <option value="">Select a service...</option>
+              <option>Web Development</option>
+              <option>Landing Page</option>
+              <option>SaaS Project</option>
+              <option>Data Analytics</option>
+              <option>Other / Multiple Services</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tell Us About Your Project</label>
+            <textarea name="message" placeholder="Describe your project, goals, timeline, and any specific requirements..." required maxlength="2000"></textarea>
+          </div>
+          <button type="submit" class="form-submit" id="submit-btn">🚀 Send Message</button>
+          <div id="form-msg" style="font-size:.85rem;margin-top:8px;display:none;"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <img src="bruh_logo.png" alt="Bruh Freelance" />
+          <span>Bruh Freelance</span>
+        </div>
+        <div class="footer-copy">© 2025 Bruh Freelance. All rights reserved.</div>
+        <div class="footer-links">
+          <a href="#services">Services</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── Cursor ── */
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    const trailContainer = document.getElementById('cursor-trail-container');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    const colors = ['#7c3aed','#4f46e5','#60a5fa','#a78bfa','#f472b6'];
+    let colorIdx = 0, lastTrail = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.transform = `translate(${mx - 4}px, ${my - 4}px)`;
+
+      // Trail
+      const now = Date.now();
+      if (now - lastTrail > 40) {
+        lastTrail = now;
+        const t = document.createElement('div');
+        t.className = 'trail-dot';
+        t.style.left = mx + 'px';
+        t.style.top = my + 'px';
+        t.style.background = colors[colorIdx % colors.length];
+        t.style.width = t.style.height = (Math.random() * 6 + 4) + 'px';
+        colorIdx++;
+        trailContainer.appendChild(t);
+        setTimeout(() => t.remove(), 600);
+      }
+    });
+
+    // Smooth ring follow
+    function animRing() {
+      rx += (mx - rx - 18) * 0.12;
+      ry += (my - ry - 18) * 0.12;
+      ring.style.transform = `translate(${rx}px, ${ry}px)`;
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // Hover effects
+    document.querySelectorAll('a, button, .service-card, .pricing-card, .why-card').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        dot.style.transform += ' scale(1.5)';
+        ring.style.width = '52px'; ring.style.height = '52px';
+        ring.style.borderColor = 'rgba(167,139,250,.6)';
+      });
+      el.addEventListener('mouseleave', () => {
+        ring.style.width = '36px'; ring.style.height = '36px';
+        ring.style.borderColor = 'rgba(124,58,237,.5)';
+      });
+    });
+
+    /* ── Navbar scroll ── */
+    window.addEventListener('scroll', () => {
+      document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    /* ── Scroll Reveal ── */
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    /* ── Web3Forms Contact Form ── */
+    const contactForm = document.getElementById('contact-form');
+    const submitBtn  = document.getElementById('submit-btn');
+    const formMsg    = document.getElementById('form-msg');
+
+    contactForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      submitBtn.textContent = '⏳ Sending...';
+      submitBtn.disabled = true;
+      formMsg.style.display = 'none';
+
+      const formData = new FormData(contactForm);
+      const object   = Object.fromEntries(formData);
+      const json     = JSON.stringify(object);
+
+      try {
+        const res  = await fetch('https://api.web3forms.com/submit', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body:    json
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          submitBtn.textContent    = '✅ Message Sent!';
+          formMsg.style.display   = 'block';
+          formMsg.style.color     = '#72bc8f';
+          formMsg.textContent     = "🎉 Thanks! We'll reply within 24 hours.";
+          contactForm.reset();
+          setTimeout(() => {
+            submitBtn.textContent  = '🚀 Send Message';
+            submitBtn.disabled     = false;
+            formMsg.style.display  = 'none';
+          }, 5000);
+        } else {
+          throw new Error(data.message || 'Submission failed');
+        }
+      } catch (err) {
+        submitBtn.textContent   = '🚀 Send Message';
+        submitBtn.disabled      = false;
+        formMsg.style.display   = 'block';
+        formMsg.style.color     = '#e97366';
+        formMsg.textContent     = '❌ Something went wrong. Please email us directly at brush.developer@gmail.com';
+      }
+    });
+  </script>
+</body>
+</html>
